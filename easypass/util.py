@@ -1,7 +1,7 @@
 """Module with various project utilities."""
 
 import numpy as np
-from numpy.random import random_sample
+
 
 NORMAL_LAYOUT = ['1234567890-=',
                  'qwertyuiop[]\\',
@@ -12,6 +12,19 @@ SHIFT_LAYOUT = ['!@#$%^&*()_+',
                  'QWERTYUIOP{}|',
                  'ASDFGHJKL:"',
                  'ZXCVBNM<>?']
+
+
+class DiscreteRandom(object):
+    """Discrete random generator."""
+
+    def __init__(self, values, probabilities):
+        self.probs = np.array(probabilities)
+        self.vals = values
+        self.probs = np.add.accumulate(self.probs)
+
+    def random(self):
+        """Return single random value according to it's probability."""
+        return self.vals[np.digitize(np.random.random_sample(1), self.probs)][0]
 
 
 def layout_mapping():
@@ -47,19 +60,18 @@ def generate_dataset(layout_map, all_chars, dist_coef=10, shift_coef=5):
 
         probs = np.exp(-probs / dist_coef)
         probs /= np.add.reduce(probs)
-        probs = np.add.accumulate(probs)
-        trans_probs[src_chr] = probs
+        trans_probs[src_chr] = DiscreteRandom(probs, all_chars)
 
     # Generate dataset.
     dataset = []
     for char in all_chars:
         example1, example2 = str(char), str(char)
         for idx in xrange(3):
-            tps = trans_probs[example1[-1]]
-            example1 += all_chars[np.digitize(random_sample(1), tps)][0]
+            drv = trans_probs[example1[-1]]
+            example1 += drv.random()
 
-            tps = trans_probs[example2[-1]]
-            example2 += all_chars[np.digitize(random_sample(1), tps)][0]
+            drv = trans_probs[example2[-1]]
+            example2 += drv.random()
 
         example = example1[::-1] + example2[1:]
         start = np.random.randint(4)
