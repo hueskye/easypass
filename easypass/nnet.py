@@ -3,32 +3,42 @@
 import neurolab as nl
 import numpy as np
 
-import util
+
+class NeurolabNNet(object):
+    """Neurolab neural net implementation."""
+
+    def __init__(self, *args):
+        bounds, layers = args
+        self.net = nl.net.netww(bounds, layers)
+
+    def train(self, train_set, *args):
+        epo, goa = args
+
+        size = len(train_set)
+        inp = train_set[:, :-1]
+        tar = train_set[:, -1].reshape(size, 1)
+
+        return self.net.train(inp, tar, epochs=epo, show=0, goal=goa)
+
+    def simulate(self, inp):
+        return self.net.sim(inp)
 
 
-def create_and_train(dataset, nnet_init, nnet_train):
-    size = len(dataset)
-    inp, tar = dataset[:, :-1], dataset[:, -1]
-    tar = tar.reshape(size, 1)
-    bounds, layers = nnet_init
-    epo, goa = nnet_train
+class NNetScorer(object):
 
-    net = nl.net.newff(bounds, layers)
-    err = net.train(inp, tar, epochs=epo, show=0, goal=goa)
+    def __init__(self, net, feature_fun):
+        self.net = net
+        self.ffun = feature_fun
 
-    return net, err
-
-
-def simulate(net, laymap, string):
-    return net.sim([create_input(laymap, string)])
+    def score(self, ngram):
+        return self.net.simulate(self.ffun(ngram))
 
 
 def test_nnet(net, test_set):
     size = len(test_set)
-    out = net.sim(test_set[:, :-1])
+    out = net.simulate(test_set[:, :-1])
     tar = test_set[:, -1].reshape(size, 1)
-    # Normalized the way neurolab does it!
-    return np.sum(np.square(out - tar)) / 2
+    return np.sum(np.square(out - tar)) / size
 
 
 def cross_validate(dataset):
@@ -55,9 +65,8 @@ def cross_validate(dataset):
                     train_set = dataset[:150]
                     test_set = dataset[150:]
 
-                    net, err = create_and_train(train_set,
-                                                (bounds, layers),
-                                                (epochs, goals))
+                    net = NeurolabNNet(bounds, layers)
+                    net.train(train_set, epochs, goals)
 
                     errors.append(test_nnet(net, test_set))
 
