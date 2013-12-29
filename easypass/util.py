@@ -1,5 +1,7 @@
 """Module with various project utilities."""
 
+import csv
+
 import numpy as np
 
 
@@ -46,6 +48,28 @@ class DiscreteRandom(object):
         """Return single random value according to it's probability."""
         idx = np.digitize(np.random.random_sample(1), self.probs)
         return self.vals[idx][0]
+
+
+def read_data(fname, k_param=4):
+    """Open CSV file, read data and create dataset ready for training."""
+    with open(fname) as infile:
+        reader = csv.reader(infile, delimiter='\t', quoting=csv.QUOTE_NONE)
+
+        data = np.array([])
+        size = 0
+
+        for row in reader:
+            if reader.line_num == 1:
+                continue
+
+            assert len(row[0]) == k_param
+
+            for elem in row:
+                data = np.append(data, elem)
+
+            size += 1
+
+        return data.reshape(size, len(data) / size)
 
 
 def main():
