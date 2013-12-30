@@ -20,7 +20,6 @@ def _create_trans_probs(layout_map, all_chars, dist_coef):
                 probs[cix] = 0
 
         probs = np.exp(-probs / dist_coef)
-        probs /= np.add.reduce(probs)
 
         trans_probs[src_chr] = util.DiscreteRandom(probs, all_chars)
 

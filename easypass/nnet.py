@@ -24,17 +24,17 @@ class NeurolabNNet(object):
         return self.net.sim(inp)
 
 
-class NGramScorer(object):
-
-    def __init__(self, net, feature_fun):
-        self.net = net
-        self.ffun = feature_fun
-
-    def score(self, ngram):
-        return self.net.simulate(self.ffun(ngram))
+def load(self, fname):
+    # TODO(matija)
+    return None
 
 
-def test_nnet(net, test_set):
+def save(self, net, fname):
+    # TODO(matija)
+    return
+
+
+def test(net, test_set):
     size = len(test_set)
     out = net.simulate(test_set[:, :-1])
     tar = test_set[:, -1].reshape(size, 1)
@@ -68,7 +68,7 @@ def cross_validate(dataset):
                     net = NeurolabNNet(bounds, layers)
                     net.train(train_set, epochs, goals)
 
-                    errors.append(test_nnet(net, test_set))
+                    errors.append(test(net, test_set))
 
                     dataset = np.roll(dataset, piece)
 

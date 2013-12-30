@@ -41,6 +41,7 @@ class DiscreteRandom(object):
 
     def __init__(self, values, probabilities):
         self.probs = np.array(probabilities)
+        self.probs /= np.add.reduce(self.probs)
         self.probs = np.add.accumulate(self.probs)
         self.vals = np.array(values)
 
