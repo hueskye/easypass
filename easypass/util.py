@@ -50,7 +50,7 @@ class DiscreteRandom(object):
         return self.vals[idx][0]
 
 
-def read_data(fname, k_param=4):
+def read_data(fname, ngram_size=4):
     """Open CSV file, read data and create dataset ready for training."""
     with open(fname) as infile:
         reader = csv.reader(infile, delimiter='\t', quoting=csv.QUOTE_NONE)
@@ -62,7 +62,7 @@ def read_data(fname, k_param=4):
             if reader.line_num == 1:
                 continue
 
-            assert len(row[0]) == k_param
+            assert len(row[0]) == ngram_size
 
             for elem in row:
                 data = np.append(data, elem)

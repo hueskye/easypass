@@ -24,7 +24,7 @@ class NeurolabNNet(object):
         return self.net.sim(inp)
 
 
-class NNetScorer(object):
+class NGramScorer(object):
 
     def __init__(self, net, feature_fun):
         self.net = net
