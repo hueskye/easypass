@@ -3,7 +3,7 @@
 import numpy as np
 
 
-def create_coordinates(laymap, string, noshift=True):
+def create_coor(laymap, string, noshift=True):
     """Basic coordinate based mapping from n-gram to features."""
     row = np.array([])
 
@@ -20,6 +20,13 @@ def normalize(dataset):
         minval, maxval = np.min(dataset[:, cix]), np.max(dataset[:, cix])
         dataset[:, cix] -= (maxval + minval) / 2
         dataset[:, cix] /= (maxval - minval) / 2
+
+
+def extend_power(dataset, extensions):
+    """Power-based feature extensions."""
+    for cix, power in extensions:
+        newcol = np.vstack(np.power(dataset[:, cix], power))
+        dataset = np.hstack((dataset, newcol))
 
 
 def main():

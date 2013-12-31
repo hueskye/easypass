@@ -1,4 +1,5 @@
 """Module for generating passwords."""
+
 import sys
 
 import numpy as np
@@ -13,12 +14,11 @@ class Scorer(object):
 
     def __init__(self, ml_alg, feature_fun):
         self.ml = ml_alg
-        self.ffun = feature_fun
+        self.ff = feature_fun
 
     def score(self, ngram):
         """Score this n-gram string."""
-        input_vector = self.ffun(ngram)
-        return self.ml.simulate(input_vector)
+        return self.ml.simulate(self.ff(ngram))
 
 
 def _random_char(all_chars, unwanted_chars):
@@ -40,6 +40,7 @@ def _random_ngram(all_chars, ngram_size):
 
 def generate(scorer, all_chars, pass_size, ngram_size):
     """Generate a high-quality password of desired size and a set of chars."""
+    # Algorithm parameters.
     init_thresh = 0.5
     next_thresh = 0.5
     num_letter_seeds = 10
@@ -60,7 +61,7 @@ def generate(scorer, all_chars, pass_size, ngram_size):
         goods = 0
         while goods < num_letter_seeds and len(chars) < len(all_chars):
             newchar = _random_char(all_chars, chars)
-            newscore = scorer.score(password[-3:] + newchar)
+            newscore = scorer.score(password[1 - ngram_size:] + newchar)
 
             chars.append(newchar)
             if newscore < next_thresh:
@@ -78,14 +79,14 @@ def generate(scorer, all_chars, pass_size, ngram_size):
         elif len(password) > ngram_size:
             password = password[:-1]
         else:
-            return generate(scorer, all_chars, pass_size, ngram_size)
+            password = generate(scorer, all_chars, pass_size, ngram_size)
 
     return password
 
 
 def main():
     net = nnet.load(sys.argv[1])
-    scorer = Scorer(net, features.create_coordinates)
+    scorer = Scorer(net, features.create_coor)
     all_chars = ''.join(util.NORMAL_LAYOUT)
 
     print generate(scorer, all_chars, 10, 4)
