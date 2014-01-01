@@ -1,11 +1,7 @@
 """Module for generating passwords."""
 
-import sys
-
 import numpy as np
 
-import features
-import nnet
 import util
 
 
@@ -32,6 +28,7 @@ def _random_char(all_chars, unwanted_chars):
 def _random_ngram(all_chars, ngram_size):
     """Return random n-gram with non-repetitive chars."""
     ngram = ['`']
+
     for cix in xrange(ngram_size):
         ngram.append(_random_char(all_chars, [ngram[-1]]))
 
@@ -85,11 +82,7 @@ def generate(scorer, all_chars, pass_size, ngram_size):
 
 
 def main():
-    net = nnet.load(sys.argv[1])
-    scorer = Scorer(net, features.create_coor)
-    all_chars = ''.join(util.NORMAL_LAYOUT)
-
-    print generate(scorer, all_chars, 10, 4)
+    pass
 
 
 if __name__ == '__main__':

@@ -35,6 +35,7 @@ def save(self, net, fname):
 
 
 def test(net, test_set):
+    """Calculate MSE for this network on the given test set."""
     size = len(test_set)
     out = net.simulate(test_set[:, :-1])
     tar = test_set[:, -1].reshape(size, 1)
@@ -42,41 +43,43 @@ def test(net, test_set):
 
 
 def cross_validate(dataset):
-    bounds = [[0, 3.6], [0, 15], [0, 1]] * 4
+    """Find optimal neural network parameters."""
+    # Calculate bounds for each input matrix column.
+    bounds = []
+    for cix in xrange(dataset.shape[1] - 1):
+        minval, maxval = np.min(dataset[:, cix]), np.max(dataset[:, cix])
+        bounds.append([minval, maxval])
 
     # All various combinations of parameters.
-    all_layers = [[10, 1], [20, 1], [30, 1], [40, 1], [50, 1]]
-    all_epochs = [50, 100, 200, 300, 400, 500]
-    all_goals = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]
-
-    # Yay.
-    np.random.shuffle(dataset)
-
+    all_layers = [[10, 1], [30, 1], [50, 1]]
+    all_epochs = [100, 300, 500]
+    all_goals = [0.01, 0.1, 1]
+    # Cross validation parameters.
+    num_rolls = 4
+    # Solution info.
     min_error = 10101001089
     best_params = 'prejadno'
 
     for layers in all_layers:
         for epochs in all_epochs:
-            for goals in all_goals:
-                # Now split dataset in 4 or 8 pieces.
-                piece = len(dataset) / 8
+            for goal in all_goals:
+                piece = len(dataset) / num_rolls
                 errors = []
-                for part in xrange(0, 8):
+                for part in xrange(0, num_rolls):
                     train_set = dataset[:150]
                     test_set = dataset[150:]
 
                     net = NeurolabNNet(bounds, layers)
-                    net.train(train_set, epochs, goals)
-
+                    net.train(train_set, epochs, goal)
                     errors.append(test(net, test_set))
 
                     dataset = np.roll(dataset, piece)
 
                 error = np.mean(errors)
                 if error < min_error:
-                    best_params = (layers, epochs, goals)
+                    best_params = (layers, epochs, goal)
 
-                print layers, epochs, goals, ':', error
+                print layers, epochs, goal, ':', error
 
     return best_params
 

@@ -50,7 +50,6 @@ def generate_dist(layout_map, all_chars, ngram_size=4, dist_coef=10):
 
 
 def main():
-    """Do nothing."""
     pass
 
 

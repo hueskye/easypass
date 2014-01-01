@@ -23,7 +23,7 @@ def normalize(dataset):
 
 
 def extend_power(dataset, extensions):
-    """Power-based feature extensions."""
+    """Extend dataset with feature powers."""
     for cix, power in extensions:
         newcol = np.vstack(np.power(dataset[:, cix], power))
         dataset = np.hstack((dataset, newcol))

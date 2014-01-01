@@ -74,7 +74,6 @@ def read_data(fname, ngram_size=4):
 
 
 def main():
-    """Do nothing."""
     pass
 
 
