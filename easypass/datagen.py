@@ -17,11 +17,11 @@ def _create_trans_probs(layout_map, all_chars, dist_coef):
             if src_chr != dst_chr:
                 probs[cix] = np.linalg.norm(coor1 - coor2)
             else:
-                probs[cix] = 0
+                probs[cix] = 10000000000000000
 
         probs = np.exp(-probs / dist_coef)
 
-        trans_probs[src_chr] = util.DiscreteRandom(probs, all_chars)
+        trans_probs[src_chr] = util.DiscreteRandom(all_chars, probs)
 
     return trans_probs
 
@@ -29,8 +29,10 @@ def _create_trans_probs(layout_map, all_chars, dist_coef):
 def _create_ngram(char, trans_probs, ngram_size):
     ngram = str(char)
     for idx in xrange(ngram_size - 1):
-        drv = trans_probs[trans_probs[-1]]
+        drv = trans_probs[ngram[-1]]
         ngram += drv.random()
+
+    return ngram
 
 
 def generate_dist(layout_map, all_chars, ngram_size=4, dist_coef=10):
@@ -39,11 +41,14 @@ def generate_dist(layout_map, all_chars, ngram_size=4, dist_coef=10):
 
     dataset = []
     for char in all_chars:
-        left_part = _create_ngram(char, trans_probs)
-        right_part = _create_ngram(char, trans_probs)
+        left_part = _create_ngram(char, trans_probs, ngram_size)
+        right_part = _create_ngram(char, trans_probs, ngram_size)
         example = left_part[::-1] + right_part[1:]
 
-        start = np.random.randint(4)
+        assert len(left_part) == ngram_size and len(right_part) == ngram_size
+        assert len(example) == 2 * ngram_size - 1
+
+        start = np.random.randint(ngram_size)
         dataset.append(example[start:start + ngram_size])
 
     return dataset

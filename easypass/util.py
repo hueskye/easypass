@@ -43,12 +43,12 @@ class DiscreteRandom(object):
         self.probs = np.array(probabilities)
         self.probs /= np.add.reduce(self.probs)
         self.probs = np.add.accumulate(self.probs)
-        self.vals = np.array(values)
+        self.vals = values
 
     def random(self):
         """Return single random value according to it's probability."""
-        idx = np.digitize(np.random.random_sample(1), self.probs)
-        return self.vals[idx][0]
+        idx = np.digitize(np.random.random_sample(1), self.probs)[0]
+        return self.vals[idx]
 
 
 def read_data(fname, ngram_size=4):
