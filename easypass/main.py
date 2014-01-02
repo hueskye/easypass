@@ -3,8 +3,10 @@
 import sys
 
 import features
+import knn
 import nnet
 import passgen
+import svm
 import util
 
 
@@ -24,9 +26,9 @@ def main():
     if reg_type == 'nnet':
         reg = nnet.load(reg_fname)
     elif reg_type == 'svm':
-        pass
+        reg = svm.load(reg_fname)
     elif reg_type == 'knn':
-        pass
+        reg = knn.load(reg_fname)
     else:
         usage()
         sys.exit(1)
