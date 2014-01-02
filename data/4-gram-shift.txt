@@ -1,4 +1,3 @@
-sequence	dino score	matijao score	viktor score
 dka;	4.0	3.5	3.8
 ohba	4.5	4.5	4.2
 c5A4	3.0	3.0	3.5

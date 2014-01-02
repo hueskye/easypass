@@ -60,9 +60,6 @@ def read_data(fname, ngram_size=4):
         size = 0
 
         for row in reader:
-            if reader.line_num == 1:
-                continue
-
             assert len(row[0]) == ngram_size
 
             for elem in row:
