@@ -44,11 +44,8 @@ def test(net, test_set):
 
 def cross_validate(dataset):
     """Find optimal neural network parameters."""
-    # Calculate bounds for each input matrix column.
-    bounds = []
-    for cix in xrange(dataset.shape[1] - 1):
-        minval, maxval = np.min(dataset[:, cix]), np.max(dataset[:, cix])
-        bounds.append([minval, maxval])
+    num_cols = dataset.shape[1] - 1
+    bounds = [[-1, 1]] * num_cols
 
     # All various combinations of parameters.
     all_layers = [[10, 1], [30, 1], [50, 1]]

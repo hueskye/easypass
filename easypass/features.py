@@ -14,10 +14,10 @@ def create_coor(laymap, string, noshift=True):
     return row
 
 
-def normalize(dataset):
+def normalize(dataset, minmax):
     """Normalize all columns of dataset to range [-1, 1]."""
     for cix in xrange(dataset.shape[1]):
-        minval, maxval = np.min(dataset[:, cix]), np.max(dataset[:, cix])
+        minval, maxval = minmax[cix]
         dataset[:, cix] -= (maxval + minval) / 2
         dataset[:, cix] /= (maxval - minval) / 2
 
