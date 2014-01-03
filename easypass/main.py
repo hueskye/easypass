@@ -10,13 +10,17 @@ import svm
 import util
 
 
-def usage():
+def usage_and_exit():
     # TODO(matija)
+    sys.exit(1)
     pass
 
 
 def main():
     # Parse command line arguments.
+    if len(sys.argv) < 4:
+        usage_and_exit()
+
     pass_size = int(sys.argv[1])
     reg_type = sys.argv[2]
     reg_fname = sys.argv[3]
@@ -30,8 +34,7 @@ def main():
     elif reg_type == 'knn':
         reg = knn.load(reg_fname)
     else:
-        usage()
-        sys.exit(1)
+        usage_and_exit()
 
     feature_fun = features.create_coor
     all_chars = ''.join(util.NORMAL_LAYOUT)

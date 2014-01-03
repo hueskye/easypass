@@ -67,7 +67,14 @@ def transform_coords(laymap, string, noshift=True):
 
 def transform_distangles(laymap, string):
     """Map string according to normalized dists and angles between chars."""
-    pass
+    row = np.array([])
+
+    minmax_d = (0, _max_dist(laymap))
+    for lix, ltr in enumerate(string):
+        coor1, coor2 = laymap[ltr], laymap[string[ltr - 1]]
+        row.append(_normalized_distangle(coor1, coor2, minmax_d))
+
+    return row
 
 
 def transform_handwise(laymap, string):
