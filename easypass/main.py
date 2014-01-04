@@ -11,9 +11,8 @@ import util
 
 
 def usage_and_exit():
-    # TODO(matija)
+    print "Usage: python", sys.argv[0], "<length> <nnet|svm|knn> <conf>"
     sys.exit(1)
-    pass
 
 
 def main():
@@ -36,9 +35,9 @@ def main():
     else:
         usage_and_exit()
 
-    feature_fun = features.create_coor
+    feature_fun = features.transform_all
     all_chars = ''.join(util.NORMAL_LAYOUT)
-    scorer = passgen.Scorer(reg, feature_fun)
+    scorer = passgen.Scorer(reg, feature_fun, util.layout_mapping())
 
     # Generate and print a password.
     print passgen.generate(scorer, all_chars, pass_size, 4)

@@ -2,6 +2,8 @@
 
 import numpy as np
 
+import util
+
 
 def _dist(coor1, coor2, noshift=True):
     """Return distance between coordinates."""
@@ -47,7 +49,7 @@ def _normalized_distangle(coor1, coor2, minmax_dist):
 
     diff = coor1[:2] - coor2[:2]
     dist = 2.0 * (np.linalg.norm(diff) - min_dist) / (max_dist - min_dist) - 1
-    angle = np.angle(complex(diff[0], diff[1]), deg=True) / 180.0
+    angle = np.angle(complex(diff[1], diff[0]), deg=True) / 180.0
 
     return (dist, angle)
 
@@ -71,8 +73,8 @@ def transform_distangles(laymap, string):
 
     minmax_d = (0, _max_dist(laymap))
     for lix, ltr in enumerate(string):
-        coor1, coor2 = laymap[ltr], laymap[string[ltr - 1]]
-        row.append(_normalized_distangle(coor1, coor2, minmax_d))
+        coor1, coor2 = laymap[ltr], laymap[string[lix - 1]]
+        row = np.append(row, _normalized_distangle(coor1, coor2, minmax_d))
 
     return row
 
@@ -86,8 +88,8 @@ def transform_handwise(laymap, string):
     # Calculate min and max distances for normalization.
     max_dist_l, max_dist_r = 0, 0
     for key, val in laymap.iteritems():
-        max_dist_l = max(max_dist_l, _dist(left_hand, val))
-        max_dist_r = max(max_dist_r, _dist(right_hand, val))
+        max_dist_l = max(max_dist_l, _dist(val, left_hand))
+        max_dist_r = max(max_dist_r, _dist(val, right_hand))
 
     minmax_l = (spacing, max_dist_l)
     minmax_r = (spacing, max_dist_r)
@@ -95,13 +97,22 @@ def transform_handwise(laymap, string):
     # Transform string.
     row = np.array([])
     for char in string:
-        left_da = _normalized_distangle(left_hand, laymap[char], minmax_l)
+        left_da = _normalized_distangle(laymap[char], left_hand, minmax_l)
         row = np.append(row, left_da)
 
-        right_da = _normalized_distangle(right_hand, laymap[char], minmax_r)
+        right_da = _normalized_distangle(laymap[char], right_hand, minmax_r)
         row = np.append(row, right_da)
 
     return row
+
+
+def transform_all(laymap, string, noshift=True):
+    """Map string according to all three transformations."""
+    row1 = transform_coords(laymap, string, noshift)
+    row2 = transform_distangles(laymap, string)
+    row3 = transform_handwise(laymap, string)
+
+    return np.hstack((row1, row2, row3))
 
 
 def extend_power(dataset, extensions):

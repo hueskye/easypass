@@ -8,13 +8,14 @@ import util
 class Scorer(object):
     """Simple class to group feature creation and scoring for n-grams."""
 
-    def __init__(self, ml_alg, feature_fun):
+    def __init__(self, ml_alg, feature_fun, laymap):
         self.ml = ml_alg
         self.ff = feature_fun
+        self.lm = laymap
 
     def score(self, ngram):
         """Score this n-gram string."""
-        return self.ml.simulate(self.ff(ngram))
+        return self.ml.simulate(self.ff(self.lm, ngram))
 
 
 def _random_char(all_chars, unwanted_chars):
@@ -33,6 +34,23 @@ def _random_ngram(all_chars, ngram_size):
         ngram.append(_random_char(all_chars, [ngram[-1]]))
 
     return ''.join(ngram[1:])
+
+
+def _entropy(string):
+    """Calculate bit entropy."""
+    count = dict()
+    for char in string:
+        if char not in count:
+            count[char] = 1
+        else:
+            count[char] += 1
+
+    entropy = 0
+    for char, count in count.iteritems():
+        prob = float(count) / len(string)
+        entropy -= prob * np.log2(prob)
+
+    return entropy
 
 
 def generate(scorer, all_chars, pass_size, ngram_size):
