@@ -4,40 +4,23 @@ import neurolab as nl
 import numpy as np
 
 
-class NeurolabNNet(object):
-    """Neurolab neural net implementation."""
+def train(bounds, layers, epo, goa, train_set):
+    """Train neural network using given parameters."""
+    net = nl.net.newff(bounds, layers)
+    net.trainf = nl.train.train_gdx
+    net.errorf = nl.error.MSE()
 
-    def __init__(self, *args):
-        bounds, layers = args
-        self.net = nl.net.newff(bounds, layers)
+    inp = train_set[:, :-1]
+    tar = train_set[:, -1].reshape(len(train_set), 1)
 
-    def train(self, train_set, *args):
-        epo, goa = args
-
-        size = len(train_set)
-        inp = train_set[:, :-1]
-        tar = train_set[:, -1].reshape(size, 1)
-
-        return self.net.train(inp, tar, epochs=epo, show=0, goal=goa)
-
-    def simulate(self, inp):
-        return self.net.sim(inp)
-
-
-def load(self, fname):
-    # TODO(matija)
-    return None
-
-
-def save(self, net, fname):
-    # TODO(matija)
-    return
+    net.train(inp, tar, epochs=epo, show=0, goal=goa)
+    return net
 
 
 def test(net, test_set):
     """Calculate MSE for this network on the given test set."""
     size = len(test_set)
-    out = net.simulate(test_set[:, :-1])
+    out = net.sim(test_set[:, :-1])
     tar = test_set[:, -1].reshape(size, 1)
     return np.sum(np.square(out - tar)) / size
 
@@ -48,9 +31,9 @@ def cross_validate(dataset):
     bounds = [[-1, 1]] * num_cols
 
     # All various combinations of parameters.
-    all_layers = [[10, 1], [30, 1], [50, 1]]
-    all_epochs = [100, 300, 500]
-    all_goals = [0.01, 0.1, 1]
+    all_layers = [[10, 1], [20, 1], [30, 1]]
+    all_epochs = [200, 300, 400]
+    all_goals = [0.001, 0.005, 0.01, 0.1, 0.5]
     # Cross validation parameters.
     num_folds = 4
     test_size = len(dataset) / num_folds
@@ -66,8 +49,7 @@ def cross_validate(dataset):
                     train_set = dataset[test_size:]
                     test_set = dataset[:test_size]
 
-                    net = NeurolabNNet(bounds, layers)
-                    net.train(train_set, epochs, goal)
+                    net = train(bounds, layers, epochs, goal, train_set)
                     errors.append(test(net, test_set))
 
                     dataset = np.roll(dataset, test_size)

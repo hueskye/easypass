@@ -8,14 +8,14 @@ import util
 class Scorer(object):
     """Simple class to group feature creation and scoring for n-grams."""
 
-    def __init__(self, ml_alg, feature_fun, laymap):
-        self.ml = ml_alg
+    def __init__(self, nnet, feature_fun, laymap):
+        self.nn = nnet
         self.ff = feature_fun
         self.lm = laymap
 
     def score(self, ngram):
         """Score this n-gram string."""
-        return self.ml.simulate(self.ff(self.lm, ngram))
+        return self.nn.sim(self.ff(self.lm, ngram))
 
 
 def _random_char(all_chars, unwanted_chars):
