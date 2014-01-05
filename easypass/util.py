@@ -51,7 +51,7 @@ class DiscreteRandom(object):
         return self.vals[idx]
 
 
-def read_data(fname, minmax, ngram_size=4):
+def read_data(fname, ngram_size=3):
     """Open CSV file, read data and create dataset ready for training."""
     with open(fname) as infile:
         reader = csv.reader(infile, delimiter='\t', quoting=csv.QUOTE_NONE)

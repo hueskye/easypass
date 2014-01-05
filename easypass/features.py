@@ -124,6 +124,22 @@ def extend_power(dataset, extensions):
     return dataset
 
 
+def load_features_all(fname, laymap):
+    dataset_raw = util.read_data(fname, 3)
+
+    dataset_new = np.array([])
+    for rix, row in enumerate(dataset_raw):
+        if not rix % 50:
+            print rix
+
+        new_row = np.append(transform_all(laymap, row[0]),
+                            float(row[1]) / 5 - 1)
+
+        dataset_new = np.append(dataset_new, new_row)
+
+    return dataset_new.reshape(len(dataset_raw), 25)
+
+
 def main():
     pass
 

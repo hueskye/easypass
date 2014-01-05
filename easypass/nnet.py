@@ -9,7 +9,7 @@ class NeurolabNNet(object):
 
     def __init__(self, *args):
         bounds, layers = args
-        self.net = nl.net.netww(bounds, layers)
+        self.net = nl.net.newff(bounds, layers)
 
     def train(self, train_set, *args):
         epo, goa = args
@@ -52,7 +52,8 @@ def cross_validate(dataset):
     all_epochs = [100, 300, 500]
     all_goals = [0.01, 0.1, 1]
     # Cross validation parameters.
-    num_rolls = 4
+    num_folds = 4
+    test_size = len(dataset) / num_folds
     # Solution info.
     min_error = 10101001089
     best_params = 'prejadno'
@@ -60,17 +61,16 @@ def cross_validate(dataset):
     for layers in all_layers:
         for epochs in all_epochs:
             for goal in all_goals:
-                piece = len(dataset) / num_rolls
                 errors = []
-                for part in xrange(0, num_rolls):
-                    train_set = dataset[:150]
-                    test_set = dataset[150:]
+                for part in xrange(0, num_folds):
+                    train_set = dataset[test_size:]
+                    test_set = dataset[:test_size]
 
                     net = NeurolabNNet(bounds, layers)
                     net.train(train_set, epochs, goal)
                     errors.append(test(net, test_set))
 
-                    dataset = np.roll(dataset, piece)
+                    dataset = np.roll(dataset, test_size)
 
                 error = np.mean(errors)
                 if error < min_error:
