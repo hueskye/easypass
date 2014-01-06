@@ -15,7 +15,9 @@ class Scorer(object):
 
     def score(self, ngram):
         """Score this n-gram string."""
-        return self.nn.sim(self.ff(self.lm, ngram))
+        raw = self.ff(self.lm, ngram)
+        row = raw.reshape(1, len(raw))
+        return self.nn.sim(row)[0]
 
 
 def _random_char(all_chars, unwanted_chars):
@@ -56,9 +58,9 @@ def _entropy(string):
 def generate(scorer, all_chars, pass_size, ngram_size):
     """Generate a high-quality password of desired size and a set of chars."""
     # Algorithm parameters.
-    init_thresh = 0.5
-    next_thresh = 0.5
-    num_letter_seeds = 10
+    init_thresh = 0.3
+    next_thresh = 0.3
+    num_letter_seeds = 6
 
     # Initialize with a good n-gram.
     while True:

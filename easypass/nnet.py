@@ -7,13 +7,13 @@ import numpy as np
 def train(bounds, layers, epo, goa, train_set):
     """Train neural network using given parameters."""
     net = nl.net.newff(bounds, layers)
-    net.trainf = nl.train.train_gdx
+    net.trainf = nl.train.train_bfgs
     net.errorf = nl.error.MSE()
 
     inp = train_set[:, :-1]
     tar = train_set[:, -1].reshape(len(train_set), 1)
 
-    net.train(inp, tar, epochs=epo, show=0, goal=goa)
+    print net.train(inp, tar, epochs=epo, show=0, goal=goa)[-1]
     return net
 
 

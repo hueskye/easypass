@@ -124,6 +124,11 @@ def extend_power(dataset, extensions):
     return dataset
 
 
+def transform_power(laymap, string):
+    row = transform_all(laymap, string)
+    return np.concatenate((row, row ** 2))
+
+
 def load_features_all(fname, laymap):
     dataset_raw = util.read_data(fname, 3)
 

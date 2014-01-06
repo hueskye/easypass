@@ -22,14 +22,15 @@ def main():
     net_conf_fname = sys.argv[1]
 
     scorer = passgen.Scorer(nl.load(net_conf_fname),
-                            features.transform_all,
+                            features.transform_power,
                             util.layout_mapping())
 
     all_chars = ''.join(util.NORMAL_LAYOUT)
 
     # Generate and print a password.
     for size in sys.argv[2:]:
-        print passgen.generate(scorer, all_chars, size, 3)
+        print size, ':',
+        print passgen.generate(scorer, all_chars, int(size), 3)
 
 
 if __name__ == '__main__':
