@@ -57,6 +57,7 @@ def cross_validate(dataset):
                 error = np.mean(errors)
                 if error < min_error:
                     best_params = (layers, epochs, goal)
+                    min_error = error
 
                 print layers, epochs, goal, ':', error
 
