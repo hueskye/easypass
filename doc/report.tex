@@ -12,6 +12,8 @@
 \renewcommand\thetable{\@arabic\c@table.}
 \makeatother
 
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -55,7 +57,8 @@ znakova (mala i velika slova, brojevi i ostali znakovi) koji bi trebali biti
 slu\v{c}ajno raspore\dj eni, kako pojedini dijelovi \v{s}ifre ne bi bile
 konkretne rije\v{c}i. Drugo po\v{z}eljno svojstvo je da je \v{s}ifru lagano
 zapamtiti. Na\v{z}alost, za ve\'cinu je to najbitnije svojstvo zbog \v{c}ega za
-\v{s}ifre koriste imena svojih djevojki, velikih kantautora (Bob) i sli\v{c}no.
+\v{s}ifre koriste imena svojih djevojki, velikih kantautora (jedan je Bob) i
+sli\v{c}no.
 
 U ovom radu predstavljamo ideju izbora, odnosno generiranja \v{s}ifre na
 temelju lako\'ce utipkavanja iste. Prva pretpostavka je da \'ce takav na\v{c}in
@@ -139,9 +142,87 @@ zna\v{c}ajki. Treba napomenuti da postoji 45 znakova koje koristimo, te za
 n-grame duljine 3, postoji oko $10^5$ razli\v{c}itih kombinacija, od kojih je
 oko $0.5\%$ pokriveno primjerima.
 
+Osim ovog skupa zna\v{c}ajki, probali smo i pro\v{s}ireni skup sa kvadratima
+svake zna\v{c}ajke. Vi\v{s}e o rezultatima kasnije.
+
 \subsection{Stohasti\v{c}ki generator \v{s}ifri}
 
+U ovom trenutku pretpostavljamo da imamo spremnu nau\v{c}enu neuronsku
+mre\v{z}u za ocjenjivanje lako\'ce utipkavanja nekog n-grama
+\texttt{ocijeni(ngram)}. 
+
+Generator radi tako da u prvoj fazi generira n-gram dovoljne kvalitete, a zatim
+u drugoj fazi gradi \v{s}ifru znak po znak do \v{z}eljene duljine. U svakom
+koraku, on nasumice odabere podskup slova s kojom bi \v{s}ifra zavr\v{s}avala
+n-gramom dovoljno dobre kvalitete, zatim pridaje vjerojatno odabira svakom
+slovu na temelju te kvalitete te u kona\v{c}nici nasumice odabire jedno slovo
+pomo\'cu diskretne slu\v{c}ajne varijable. Ukoliko u nekom trenutku nema
+dovoljno slova s kojima mo\v{z}e kvalitetno nastaviti, generator bri\v{s}e
+zadnje slovo i nastavlja. U tom smislu ovo nazivamo kvazi-backtracking
+algoritam.
+
+Gore navedeni algoritam ne radi pretjerano brzo i sigurno se mo\v{z}e zamijeniti
+nekim oblikom evolucijskih algoritama ili nekom boljom heuristi\v{c}kom metodom,
+no za potrebe prototipa i prve implementacije ove ideje radi dovoljno dobro.
+
+\clearpage
+\begin{algorithm}
+\caption{Stohasti\v{c}ki generator \v{s}ifri}
+\label{alg1}
+\begin{algorithmic}
+    \State $prag\_pocni \leftarrow 0.5$
+    \State $sifra \leftarrow ``"$
+    \Loop
+        \State $sifra \leftarrow slucajni\_ngram()$
+        \If{$ocijeni(sifra) \geq prag\_pocni$}
+        \State \textbf{break}
+        \EndIf
+    \EndLoop\\
+    \State $prag\_dalje \leftarrow 0.25$
+    \While{$duljina(sifra) < zeljena\_duljina$}
+        \State $promijesaj(znakovi)$
+        \State $broj\_dobrih \leftarrow 0$\\
+        \For{$z \in znakovi$}
+            \State $ngram \leftarrow sifra[-2:] + z$
+            \State $ocjena \leftarrow ocijeni(ngram)$\\
+            \If{$ocjena \geq prag\_dalje$}
+                \State $vjerojatnosti[z] \leftarrow ocjena + 1$
+                \State $broj\_dobrih \leftarrow broj\_dobrih + 1$
+            \Else
+                \State $vjerojatnosti[z] \leftarrow 0$
+            \EndIf
+        \EndFor\\
+        \State $normaliziraj(vjerojatnosti)$
+        \If{$broj\_dobrih \geq 5$}
+            \State $sifra \leftarrow sifra + slucajni(vjerojatnosti)$
+        \ElsIf{$duljina(sifra) > 2$}
+            \State $sifra \leftarrow sifra[:-1]$
+        \Else
+            \State \textbf{kreni ponovo}
+        \EndIf
+    \EndWhile
+\end{algorithmic}
+\end{algorithm}
+
 \section{Rezultati}
+
+Testiranje mreže je provedeno cross-validacijom. Od 450 primjera 3/4 je
+korišteno za učenje neuronske mreže dok je ostalih 1/4 primjera korištena za
+testiranje. Primjeri su se rotirali kako se nebi mreža uvijek učila sa istim
+primjerima. Kroz taj postupak testirano je nekoliko paramatera: broj neurona u
+prvom sloju, broj epoha učenja i zadovoljavajuća greška nakon koje učenje
+prestaje. Brojevi neurona koji su testirani su 10, 20 i 30. Broj epoha smo
+ograničili na 200, 300 i 400 dok smo za zadovoljavajuću grešku uzimali 0.001,
+0.005, 0.01, 0.1 i 0.5. Za svaku kombinaciju tih parametara izračunata je
+kvadratna greška (MSE). Dobiveni podatci predočeni su grafovima na način da se
+vidi ovisnost greške neuronske mreže za 2 parametra.
+
+Na ovom grafu os apscisu nam čini zadovoljavajuća greška prikazana logirtmom te
+imamo tri različite funkcije za različiti broj epoha.
+
+Ovaj graf nam prikazuje parametar broj neurona kombiniran sa zadovoljavajućom greškom.
+
+Na zadnjem grafu apscisu nam čini broj neurona dok su funkcije prikazane za broj epoha.
 
 \section{Zaklju\v{c}ak}
 
