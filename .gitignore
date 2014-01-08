@@ -1,5 +1,11 @@
 *.py[cod]
 
+# LaTeX stuff
+*.aux
+*.dvi
+*.log
+*.out
+
 # C extensions
 *.so
 

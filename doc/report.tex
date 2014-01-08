@@ -26,9 +26,54 @@
 
 \section*{Sa\v{z}etak}
 
+Za ve\'cinu korisnika sigurnost na ra\v{c}unalnim sustavima bazira se na
+kvalitetnoj \v{s}ifri. Ovaj rad predstavlja pristup generiranju kvalitetnih
+\v{s}ifri na temelju lako\'ce utipkvanja istih. Za analizu lako\'ce utipkavanja
+nau\v{c}ili smo neuronsku mre\v{z}u da regresijom ocjeni lako\'cu utipkavanja
+nizova znakova fiksne duljine (engl., \emph{n-gram}), u na\v{s}em slu\v{c}aju
+veli\v{c}ine 3. Optimalne parametre neuronske mre\v{z}e odredili smo unakrsnom
+validacijom nad skupom od oko 440 podnizova koriste\'ci 4 preklopa. Iako
+rezultati jako variraju, u kona\v{c}nici smo dobili dovoljno dobre rezultate za
+izradu generatora. Sam generator koristi jednostavnu tehniku gdje kre\'ce s
+kvalitetnim nizom duljine 3 i svaki sljede\'ci znak odabire slu\v{c}ajnim
+odabirom, \v{c}ija je vjerojatnost odabira proporcionalna kvaliteti zadnjeg
+dobivenog podniza.
+
 \section{Uvod}
 
-\section{Zadatak}
+Sigurnost privatnosti na ra\v{c}unalnim sustavima danas je bitna vi\v{s}e nego
+ikada. Za ve\'cinu korisnika to zna\v{c}i jednu stvar -- kvalitetna \v{s}ifra.
+I dok sustavi poput GMail-a ugra\dj uju metode dodatne verifikacije korisnika
+putem tokena generiranih primjerice mobilnim ure\dj ajem te postoje
+rje\v{s}enja sigurnosti uporabom kriptografskih metoda javnih i privatnih
+klju\v{c}eva (SSH, GPG, itd.), za ve\'cinu web servisa, operacijskih sustava i
+ostalih oblika programske potpore kvalitetna \v{s}ifra je najzastupljenije
+rje\v{s}enje. 
+
+Vi\v{s}e je svojstava kvalitetne \v{s}ifre. Najbitnije svojstvo je sigurnost --
+mora biti dovoljne duljine, sadr\v{z}avati dovoljno razli\v{c}itih vrsta
+znakova (mala i velika slova, brojevi i ostali znakovi) koji bi trebali biti
+slu\v{c}ajno raspore\dj eni, kako pojedini dijelovi \v{s}ifre ne bi bile
+konkretne rije\v{c}i. Drugo po\v{z}eljno svojstvo je da je \v{s}ifru lagano
+zapamtiti. Na\v{z}alost, za ve\'cinu je to najbitnije svojstvo zbog \v{c}ega za
+\v{s}ifre koriste imena svojih djevojki, velikih kantautora (Bob) i sli\v{c}no.
+
+U ovom radu predstavljamo ideju izbora, odnosno generiranja \v{s}ifre na
+temelju lako\'ce utipkavanja iste. Prva pretpostavka je da \'ce takav na\v{c}in
+zastupati sve znakove na tipkovnici u podjednakoj mjeri te da zbog slu\v{c}ajne
+prirode generiranja \v{s}ifri ne\'ce do\'ci do podnizova koji se mogu na\'ci u
+rje\v{c}nicima, prema tome bi trebalo biti zadovoljeno svojstvo sigurnosti.
+Druga pretpostavka je da lako\'ca utipkavanja olak\v{s}ava mehani\v{c}ko
+pam\'cenje i da \'ce time biti zadovoljeno drugo stvojstvo dobre \v{s}ifre,
+iako mo\v{z}da tek nakon kra\'ceg perioda uvje\v{z}bavanja \v{s}ifre.
+
+U\v{z}i aspekt ovog zadatka koji je i ujedno najte\v{z}i jest analiza lako\'ce
+utipkavanja proizvoljnih nizova znakova na tipkovnici odre\dj enog rasporeda
+znakova. Pristup koji smo prirodno prihvatili jest uporaba subjektivnih ocjena
+skupa kra\'cih nizova u nadi da postoje nekakva statisti\v{c}ka ili geometrijska
+korelacija izme\dj u transformiranih nizova znakova i na\v{s}ih subjektivnih ocjena.
+Konkretno, koristili smo neuronske mre\v{z}e kako bi regresijom odredili lako\'ce
+utipkvanja nizova znakova koje nismo vidjeli.
 
 \section{Metode}
 
@@ -44,8 +89,4 @@
 
 \section{Zaklju\v{c}ak}
 
-\section*{Literatura}
-
-Nemamo ni\v{s}ta.
-
-\end{document} 
+\end{document}
