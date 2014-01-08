@@ -1,4 +1,4 @@
-\documentclass[a4paper,twocolumn,dvipdfm]{article}
+\documentclass[a4paper,twocolumn]{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[croatian]{babel}
@@ -206,27 +206,72 @@ no za potrebe prototipa i prve implementacije ove ideje radi dovoljno dobro.
 
 \section{Rezultati}
 
-Testiranje mreže je provedeno cross-validacijom. Od 450 primjera 3/4 je
-korišteno za učenje neuronske mreže dok je ostalih 1/4 primjera korištena za
-testiranje. Primjeri su se rotirali kako se nebi mreža uvijek učila sa istim
-primjerima. Kroz taj postupak testirano je nekoliko paramatera: broj neurona u
-prvom sloju, broj epoha učenja i zadovoljavajuća greška nakon koje učenje
-prestaje. Brojevi neurona koji su testirani su 10, 20 i 30. Broj epoha smo
-ograničili na 200, 300 i 400 dok smo za zadovoljavajuću grešku uzimali 0.001,
-0.005, 0.01, 0.1 i 0.5. Za svaku kombinaciju tih parametara izračunata je
-kvadratna greška (MSE). Dobiveni podatci predočeni su grafovima na način da se
-vidi ovisnost greške neuronske mreže za 2 parametra.
+Testiranje mreže je provedeno cross-validacijom. Od 450 primjera $75\%$ je
+korišteno za učenje neuronske mreže dok je ostalih $25\%$ primjera korištena za
+testiranje. Primjeri su se rotirali \v{c}etiri puta i gre\v{s}ka je usrednjena,
+kako se nebi mreža uvijek učila sa istim primjerima. Kroz taj postupak
+testirano je nekoliko paramatera: broj neurona u prvom sloju, broj epoha učenja
+i zadovoljavajuća greška nakon koje učenje prestaje. Brojevi neurona koji su
+testirani su 10, 20 i 30. Broj epoha smo ograničili na 200, 300 i 400 dok smo
+za zadovoljavajuću grešku uzimali 0.001, 0.005, 0.01, 0.1 i 0.5. Za svaku
+kombinaciju tih parametara izračunata je kvadratna greška (MSE). Dobiveni
+podatci predočeni su grafovima na način da se vidi ovisnost greške neuronske
+mreže za dva parametra te usrednjeni za tre\'ci.
 
-Na ovom grafu os apscisu nam čini zadovoljavajuća greška prikazana logirtmom te
-imamo tri različite funkcije za različiti broj epoha.
+\begin{figure}[htc]
+    \centering
+    \includegraphics[scale=0.25]{epochs.jpeg}
+    \caption{Odnos ciljane gre\v{s}ke i broja epoha u\v{c}enja na gre\v{s}ku}
+    \label{fig:epohe}
+\end{figure}
 
-Ovaj graf nam prikazuje parametar broj neurona kombiniran sa zadovoljavajućom greškom.
+\begin{figure}[htc]
+    \centering
+    \includegraphics[scale=0.25]{goal.jpeg}
+    \caption{Odnos broja neurona i broja epoha u\v{c}enja na gre\v{s}ku}
+    \label{fig:greske}
+\end{figure}
 
-Na zadnjem grafu apscisu nam čini broj neurona dok su funkcije prikazane za broj epoha.
+\begin{figure}[htc]
+    \centering
+    \includegraphics[scale=0.25]{size.jpeg}
+    \caption{Odnos ciljane gre\v{s}ke i broja neurona na gre\v{s}ku}
+    \label{fig:velicine}
+\end{figure}
 
 \section{Zaklju\v{c}ak}
 
-\section*{Literatuta}
+Ovaj rad predstavlja prvi nama poznati pristup ideji da se kvalitetne \v{s}ifre
+mogu generirati minimizacijom lako\'ce tipkanja, time osiguravaju\'ci dobar
+temelj za mehani\v{c}ko pam\'cenje i sigurnost \v{s}ifre. Glavni fokus je prema
+tome bila analiza lako\'ce utipkavanja proizvoljnog teksta. U tom aspektu
+vjerujemo da smo postigli dovoljno dobre rezultate za na\v{s} cilj, iako
+postoji mnogo mjesta za napredak.
+
+Prvi problem je generiranje i ocjenjivanje n-grama. Vjerujemo kako je 3
+apsolutno minimalna duljina i trebalo bi bolje isprobati ve\'ce duljine, ali
+najvi\v{s}e do 5-6, jer nakon toga nema puno koristi. Ocjenjivanje je veoma
+subjektivno, i iako je jedna ideja da je to dobro jer omogu\'cava
+personalizirane generatore, upitna je statisti\v{c}ka korelacija tih ocjena i
+samih n-grama. Jedna mogu\'ca ideja je napraviti program koji testira korisnika
+i sam daje ocjene na temelju brzine utipkavanja. Takav program bi mogao
+detektirati kada je dovoljno primjera izgenerirano i time mo\v{z}da skratiti
+ionako dug postupak.
+
+Drugi problem je kako idalno predstaviti puni skup znakova, odnosno
+ukorporirati tipku \texttt{shift}. Na\v{s} prvi skup za u\v{c}enje sastojao se
+od 200 n-grama duljine 4 koji su uklju\v{c}ivali sve znakove, no sa mapiranjem
+shifta u posebnu zna\v{c}ajku (je li snisnut shift) za svako slovo, nismo
+dobivali dobre rezultate. Mo\v{z}da je mogu\'ce maknuti to iz potprograma za
+analizu i inducirati u generator, gdje bi generator odlu\v{c}ivao kada staviti
+\texttt{shift} i time prilagodio ocjenu. Naravno, mo\v{z}da najbolje to
+prepustiti korisniku, po\v{s}to u malo vremena mo\v{z}e odlu\v{c}iti gdje bi
+\texttt{shift} odgovarao u ve\'c generiranoj \v{s}ifri.
+
+Osim toga, mo\v{z}e se probati jo\v{s} na\v{c}ina generiranja zna\v{c}ajki kao
+i druge metode strojnog u\v{c}enja.
+
+\section*{Literatura}
 
 Ovo smo radili isklju\v{c}ivo prema vlastitom naho\dj enju. Na internetu
 je te\v{s}ko na\'ci materijale na ovu temu. Kao pomo\'c, koristili smo
@@ -234,5 +279,34 @@ isklju\v{c}ivo dokumentacije programskih biblioteka koje smo koristili
 (\texttt{neurolab}, \texttt{numpy}).
 
 \subsection*{Dodatak A: programsko ostvarenje}
+
+Za izradu svih elemenata ovog rada kori\v{s}ten je programski jezik
+\texttt{python}. Kako bi sve radilo, potrebno je instalirati pakete
+\texttt{numpy} i \texttt{neurolab}.
+
+Glavni program generatora je napisan kao samostalna skripta, ostali moduli se
+mogu uvesti u recimo \texttt{ipython} i koristiti tako. Generator kao prvi
+argument prima datoteku s postavkama mre\v{z}e, i onda proizvoljan broj argumenata,
+svaki od kojih odgovara duljini jedne generirane \v{s}ifre. Primjer:
+
+\begin{verbatim}
+$ python easypass/main.py data/conf.net 10 12 14
+10: p2a'hs]i]v
+12: 4f=g=7c12hit
+14: bs0.m[baikpef]
+\end{verbatim}
+
+Ostali moduli su:
+\begin{quote}
+\begin{description}
+    \item[datagen:] generiranje podataka
+    \item[util:] razne pomo\'cne metode
+    \item[features:] generiranje zna\v{c}ajki
+    \item[nnet:] sve za neuronske mre\v{z}e
+    \item[passgen:] generator \v{s}ifri
+\end{description}
+\end{quote}
+
+Za detaljni opis metoda, pogledati dokumentaciju unutar koda.
 
 \end{document}
