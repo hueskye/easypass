@@ -113,8 +113,31 @@ Za svaki znak generiramo 8 zna\v{c}ajki, koji se mogu podijeliti u tri grupe:
 Pritom se vrijednosti svih zna\v{c}ajki normaliziraju na interval $[-1, 1]$.
 
 Koordinate su temelj svih ovih zna\v{c}ajki. Koordinatni sustav je postavljen
-sa $(0,0)$ na tipki $1$. Svaka tipka je kvadrat veli\v{c}ine $1$ sa $1$ i udaljenost izme\dj u 
-tipki je $0.2$.
+sa $(0,0)$ na tipki $1$. Svaka tipka je kvadrat veli\v{c}ine $1$ sa $1$ i
+udaljenost izme\dj u tipki je $0.2$. Prva koordinata je vertikalna (redak), te
+horizontalna koordinata prve tipke u svakom redu je zadana nizom $[0, 0.6, 1,
+1.6]$. Prema tome koordinate znaka $a$ su $(2.4, 1)$, znaka $b$ su $(3.6, 6.4)$
+te za $=$ su $(0, 13.2)$. 
+
+Polarne koordinate vektora su njegova duljina i kut, koje se trivijalno
+izra\v{c}unaju uporabom Pitagorinog pou\v{c}ka i osnovne trigonometrije. Ako su
+sve udaljenosti izme\dj u svih slova bliske, vjerojatno se radi o lo\v{s}em
+nizu znakova jer ih vjerojatno treba upisati jednom rukom na nezgodan
+na\v{c}in.
+
+Tipke \texttt{alt} slu\v{z}e kao aproksimacija neutralne pozicije ruku tijekom
+tipkanja. Naime, prsti bi prirodno trebali stajati u srednjem redu slova, nad
+tipkama \texttt{asdf} i \texttt{jkl;}, ispod kojih se dva reda ni\v{z}e
+pribli\v{z}no nalaze \texttt{alt} tipke. Te dvije koordinate su zapravo
+izra\v{c}unate kao tipke koje bi bile direkno ispod tipki $x$ i $,$ (koordinate
+$(4.8, 2.8)$ i $(4.8, 10)$). Intuicija je da ako su za jednu od ove dvije tipke
+kutevi za sve znakove u n-gramu podjednaki, radi se o vertikalnom slijedu tipki
+koji je primjerice nepo\v{z}eljan, dok su horizontalni slijedovi bolji.
+
+Za n-grame veli\v{c}ine 3, koje mi koristimo, ovo sve skupa predstavlja 24
+zna\v{c}ajki. Treba napomenuti da postoji 45 znakova koje koristimo, te za
+n-grame duljine 3, postoji oko $10^5$ razli\v{c}itih kombinacija, od kojih je
+oko $0.5\%$ pokriveno primjerima.
 
 \subsection{Stohasti\v{c}ki generator \v{s}ifri}
 
