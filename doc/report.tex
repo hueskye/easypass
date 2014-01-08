@@ -34,10 +34,9 @@ nizova znakova fiksne duljine (engl., \emph{n-gram}), u na\v{s}em slu\v{c}aju
 veli\v{c}ine 3. Optimalne parametre neuronske mre\v{z}e odredili smo unakrsnom
 validacijom nad skupom od oko 440 podnizova koriste\'ci 4 preklopa. Iako
 rezultati jako variraju, u kona\v{c}nici smo dobili dovoljno dobre rezultate za
-izradu generatora. Sam generator koristi jednostavnu tehniku gdje kre\'ce s
-kvalitetnim nizom duljine 3 i svaki sljede\'ci znak odabire slu\v{c}ajnim
-odabirom, \v{c}ija je vjerojatnost odabira proporcionalna kvaliteti zadnjeg
-dobivenog podniza.
+izradu generatora. Generator koristi jednostavnu tehniku gdje kre\'ce s
+slu\v{c}ajnom odabranom kratkom \v{s}ifrom dobre kvalitete i svaki sljede\'ci znak bira
+stohati\v{c}ki na temelju kvalitete novodobivenog zadnjeg podniza.
 
 \section{Uvod}
 
@@ -77,16 +76,59 @@ utipkvanja nizova znakova koje nismo vidjeli.
 
 \section{Metode}
 
+Po\v{s}to razli\v{c}iti rasporedi tipki utje\v{c}u na lako\'cu utipkavanja,
+kori\v{s}ten je US raspored tipki. Tako\dj er ne koristimo znakove za koje je
+potrebna tipka \texttt{shift} i podrazumijeva se da nitko ne koristi
+\texttt{capslock}. Prema tome, sva slova su mala i koristi se podskup znakova.
+Znakovi \texttt{\textbackslash} i \texttt{|} su na US tipkovnici na tipki koja
+je ponekad iznad, a ponekad lijevo od tipke \texttt{enter}, zbog \v{c}ega
+tako\dj er nisu kori\v{s}tene.
+
 \subsection{Analiza lako\'ce tipkanja}
+
+\subsubsection{Tehnika n-grama}
+
+Pretpostavka koju koristimo prilikom analize lako\'ce utipkavanja proizvoljnog
+teksta jest da ako uzmemo sve mogu\'ce podnizove fiksne duljine (n-grame),
+lako\'ca utipkavanja tog niza znakova odgovara prosjeku ocjena lako\'ca
+utipkavanja svih njegovih n-grama. Ta se pretpostavka temelji na vi\v{s}e
+intuitivnih ideja. Prva je da ako su n-grami dovoljno dugi i dovoljno
+kvalitetni, ono \v{s}to je trebalo utipkati prije $n$ znakova nije toliko
+bitno, tj.\ toliko daleka povijest nema utjecaj na ono \v{s}to slijedi. Druga
+ideja je da prilikom u\v{c}enja utipkavanja neke \v{s}ifre, korisnik \'ce
+prirodno grupirati slova u manje grupe veli\v{c}ine 3 do 5, koje \'ce mo\'ci
+instantno utipkati ako su kvalitetne. Time ujedno olak\v{s}avamo
+ozna\v{c}avanje primjera, smanjujemo broj ulaznih kombinacija i omogu\'cujemo
+u\v{c}enje neuronskim mre\v{z}om.
+
+\subsubsection{Generiranje zna\v{c}ajki}
+
+Za svaki znak generiramo 8 zna\v{c}ajki, koji se mogu podijeliti u tri grupe:
+\begin{itemize}
+        \item Koordinate trenutne tipke (2)
+        \item Polarne koordinate vektora od prethodne do trenutne tipke (2)
+        \item Polarne koordinate vektora od lijeve i desne tipke \texttt{alt}
+            do trenutne tipke (4)
+\end{itemize}
+Pritom se vrijednosti svih zna\v{c}ajki normaliziraju na interval $[-1, 1]$.
+
+Koordinate su temelj svih ovih zna\v{c}ajki. Koordinatni sustav je postavljen
+sa $(0,0)$ na tipki $1$. Svaka tipka je kvadrat veli\v{c}ine $1$ sa $1$ i udaljenost izme\dj u 
+tipki je $0.2$.
 
 \subsection{Stohasti\v{c}ki generator \v{s}ifri}
 
 \section{Rezultati}
 
-\subsection{Implementacija}
-
-\subsection{U\v{c}enje neuronske mre\v{z}e}
-
 \section{Zaklju\v{c}ak}
+
+\section*{Literatuta}
+
+Ovo smo radili isklju\v{c}ivo prema vlastitom naho\dj enju. Na internetu
+je te\v{s}ko na\'ci materijale na ovu temu. Kao pomo\'c, koristili smo
+isklju\v{c}ivo dokumentacije programskih biblioteka koje smo koristili
+(\texttt{neurolab}, \texttt{numpy}).
+
+\subsection*{Dodatak A: programsko ostvarenje}
 
 \end{document}
